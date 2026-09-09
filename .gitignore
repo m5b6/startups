@@ -43,3 +43,7 @@ coverage/
 logs/
 *.log
 report.[0-9]*.json
+
+# Claude Code local state
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

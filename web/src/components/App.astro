@@ -21,6 +21,7 @@ const EV: Record<string, { fill: string; border: string; label: string; dot: str
   fundacion:   { fill: "#1a1916", border: "0",                   label: "Fundación",       dot: "#1a1916" },
   capital:     { fill: ACCENT,    border: "0",                   label: "Levantó capital", dot: ACCENT },
   pivot:       { fill: "#ffffff", border: "1.6px solid #b5760f", label: "Pivot", dot: "#b5760f" },
+  rebrand:     { fill: "#ffffff", border: "1.6px solid #4a6fa5", label: "Cambio de nombre", dot: "#4a6fa5" },
   adquisicion: { fill: "#2f7d4f", border: "0",                   label: "Adquisición",     dot: "#2f7d4f" },
   cierre:      { fill: "#c0492f", border: "0",                   label: "Cierre",          dot: "#c0492f" },
   inactivo:    { fill: "#ffffff", border: "1.4px dashed #a8a39a", label: "Sin señal reciente", dot: "#a8a39a" },
@@ -34,8 +35,8 @@ const ticks = data.meta.ticks.map((y: number) => ({ y, left: ((y - start) / (end
 
 const startups = data.startups.map((s: any) => {
   const events = s.events.map((e: any) => ({
-    ...e, left: pos(e.date), fill: EV[e.type].fill, border: EV[e.type].border,
-    typeLabel: EV[e.type].label, dateLabel: dateLabel(e.date), chipColor: EV[e.type].dot,
+    ...e, left: pos(e.date), fill: (EV[e.type] ?? EV.pivot).fill, border: (EV[e.type] ?? EV.pivot).border,
+    typeLabel: (EV[e.type] ?? EV.pivot).label, dateLabel: dateLabel(e.date), chipColor: (EV[e.type] ?? EV.pivot).dot,
     // The source chip is a link: for pivots (our own heuristic) it points to the
     // Wayback snapshot; for the rest, to the source (press/tracker/Platanus).
     href: e.wayback_url || e.source_url || null,
@@ -48,6 +49,7 @@ const startups = data.startups.map((s: any) => {
     // El filtro de año matchea solo el PRIMER evento (año de fundación).
     years: s.events[0] ? [s.events[0].date.slice(0, 4)] : [],
     hasPivot: s.events.some((e: any) => e.type === "pivot"),
+    hasRebrand: s.events.some((e: any) => e.type === "rebrand"),
     hasCapital: s.events.some((e: any) => e.type === "capital"),
     st: ST[status] ?? ST.activa,
     aliases: s.aliases ?? [],
@@ -56,7 +58,7 @@ const startups = data.startups.map((s: any) => {
 });
 
 const estadoChips = [["activa","Activas"],["adquirida","Adquiridas"],["cerrada","Cerradas"]];
-const tagChips = [["pivot","Pivotearon"],["capital","Levantaron capital"]];
+const tagChips = [["pivot","Pivotearon"],["rebrand","Cambiaron de nombre"],["capital","Levantaron capital"]];
 
 // Cuadraditos de la leyenda del párrafo introductorio (mismos colores que EV).
 // `pre` es el conector que va antes de la frase dentro de la oración.
@@ -180,7 +182,7 @@ const ogAlt = openMatch
 
     <div id="rows" data-rows style="padding:4px 30px 14px;overflow-y:auto;overflow-x:hidden;flex:1;min-height:0">
       {startups.map((s) => (
-        <div class="startup" data-search={s.search} data-status={s.status} data-years={s.years.join(",")} data-haspivot={s.hasPivot} data-hascapital={s.hasCapital} data-name={s.name}>
+        <div class="startup" data-search={s.search} data-status={s.status} data-years={s.years.join(",")} data-haspivot={s.hasPivot} data-hasrebrand={s.hasRebrand} data-hascapital={s.hasCapital} data-name={s.name}>
           <div class="row" data-toggle style="display:grid;grid-template-columns:200px 1fr auto;gap:0;align-items:center;height:42px;cursor:pointer;border-radius:10px">
             <div class="namecell" style="display:flex;align-items:center;gap:11px;min-width:0;padding-left:16px">
               <span class="statusdot" style={`width:8px;height:8px;flex-shrink:0;background:${s.st.color};border-radius:2.5px`} title={s.st.label}></span>
@@ -251,6 +253,7 @@ const ogAlt = openMatch
       if (ok && state.estado.size && !state.estado.has(d.status!)) ok = false;
       if (ok && state.years.size && !d.years!.split(",").some((y) => state.years.has(y))) ok = false;
       if (ok && state.tags.has("pivot") && d.haspivot !== "true") ok = false;
+      if (ok && state.tags.has("rebrand") && d.hasrebrand !== "true") ok = false;
       if (ok && state.tags.has("capital") && d.hascapital !== "true") ok = false;
       el.style.display = ok ? "" : "none";
       if (ok) n++;
