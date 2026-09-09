@@ -31,6 +31,7 @@ const EV: Record<string, { fill: string; stroke?: string; dash?: boolean }> = {
   fundacion:   { fill: INK },
   capital:     { fill: ACCENT },
   pivot:       { fill: "#ffffff", stroke: "#b5760f" },
+  rebrand:     { fill: "#ffffff", stroke: "#4a6fa5" },
   adquisicion: { fill: "#2f7d4f" },
   cierre:      { fill: "#c0492f" },
   inactivo:    { fill: "#ffffff", stroke: "#a8a39a", dash: true },

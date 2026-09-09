@@ -20,25 +20,15 @@ WEB = ROOT / "web" / "src" / "data" / "timeline.json"
 MES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"]
 
 
-# Fact-check corrections (subagents against source_url). Key: (name, type, old_date)
+# Fact-check corrections (subagents against source_url).
+# Source of truth: data/corrections.json (editable a mano o escrito por el loop
+# trajectory-loop al cerrar PASS).
+# Schema JSON: {"<name>|<type>|<old_date>": {"date"?, "prose"?, "title"?}, ...}
+# El separador "|" evita chocar con nombres que contengan otros caracteres.
+CORRECTIONS_PATH = common.DATA_DIR / "corrections.json"
+_CORRECTIONS_RAW = json.loads(CORRECTIONS_PATH.read_text(encoding="utf-8"))
 CORRECTIONS = {
-    ("Milla", "cierre", "2022-06"): {"date": "2025-10",
-        "prose": "Gestión de viajes corporativos. milla.travel siguió con capturas vivas hasta oct-2025 y luego cayó (NXDOMAIN): cese de operaciones a fines de 2025, sin anuncio formal."},
-    ("Toku", "capital", "2023-06"): {"date": "2023-03"},
-    ("Kunzapp", "capital", "2023-06"): {"date": "2023-09"},
-    ("Gokei", "capital", "2025-06"): {"date": "2025-09"},
-    ("Examedi", "capital", "2021-06"): {"date": "2021-09"},
-    ("Shinkansen", "capital", "2023-07"): {
-        "prose": "Cerró una ronda Seed de US$3M liderada por ALLVP (Chile Ventures participó) para escalar su infraestructura de pagos entre bancos a la velocidad de internet."},
-    ("Grupalia", "capital", "2025-10"): {"date": "2025-10", "title": "Seed US$4,8M (equity + deuda)",
-        "prose": "Levantó una ronda seed de US$4,8M (equity + deuda), con Platanus Ventures, Semilla, Innogen, CAPEM y Addem, para créditos grupales digitales a micro-empresas en México."},
-    # --- fundaciones corregidas: describen el producto ORIGINAL (no el actual). Ver docs/METHODOLOGY.md ---
-    ("Blar", "fundacion", "2023-09"): {
-        "prose": "Blar entró al batch 2023-2 de Platanus Ventures (inversión inicial ~US$100K) con una idea muy distinta a la actual: un 'ChatGPT para datos financieros', o sea traducir lenguaje natural a SQL (NL2SQL). De ahí derivó la tecnología de grafos de código que la llevó por varios pivots."},
-    ("Gokei", "fundacion", "2023-09"): {
-        "prose": "Gokei ingresó al batch 2023-2 de Platanus Ventures (inversión inicial ~US$100K) con una app amplia para coordinar la salud —agendar horas, exámenes, medicamentos— e incluso la idea de un seguro complementario digital, antes de encontrar su foco en los reembolsos."},
-    ("Kapso", "fundacion", "2024-09"): {
-        "prose": "Kapso se incorporó al batch de la segunda mitad de 2024 de Platanus Ventures con un producto totalmente distinto al actual: personal training online, entrenamiento de fuerza personalizado con coaches humanos + IA (prensa, may-2024)."},
+    tuple(k.split("|", 2)): v for k, v in _CORRECTIONS_RAW.items()
 }
 
 
@@ -158,7 +148,7 @@ def main():
             dom = c["domain"]
             src_label = "Platanus" if dom.startswith("profile:") else dom
             events.append({
-                "type": "pivot", "date": c["date"], "title": c["title"],
+                "type": c["type"], "date": c["date"], "title": c["title"],
                 "prose": c["prose"], "quote": "",
                 "source": f"{src_label} · {src_month(c['date'])}",
                 "source_url": c["wayback_url"],
@@ -186,7 +176,7 @@ def main():
             k = norm(n)
             if not k or k == disp_key or k in seen:
                 continue
-            if n == n.lower() and k == slug_key:  # raw codename token (lowercase) — don't show
+            if n == n.lower() and k == slug_key:  # raw codename token (lowercase) - don't show
                 continue
             seen.add(k)
             vis.append(n)
