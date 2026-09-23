@@ -2451,10 +2451,19 @@
           "source": "App Store",
           "basis": "La fecha corresponde a la primera versión pública de la app, no a la fundación de la empresa.",
           "source_url": "https://apps.apple.com/cl/app/vita-ia/id6751625028"
+        },
+        {
+          "type": "programa",
+          "date": "2026-06",
+          "title": "Vita entra a Platanus",
+          "prose": "Vita integra la generación 2026-1 de Platanus con una propuesta para operar ventas, cobros y atención de gimnasios mediante agentes.",
+          "source": "Platanus",
+          "basis": "La generación 2026-1 se desarrolló entre junio y septiembre de 2026.",
+          "source_url": "https://platan.us/startups/vita"
         }
       ],
       "aliases": [],
-      "search_blob": "vita getvita.ai vita.lat"
+      "search_blob": "vita getvita.ai vita.lat platanus platanus ventures 2026-1"
     }
   ]
 }
