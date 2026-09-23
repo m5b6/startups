@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Chile, Startups",
-    "count": 82,
+    "count": 83,
     "preliminary": false,
     "note": "Datos verificados. Cada hito enlaza a su fuente.",
     "range": {
@@ -2436,6 +2436,25 @@
       ],
       "aliases": [],
       "search_blob": "movana movana movana movana movana.io"
+    },
+    {
+      "name": "Vita",
+      "domain": "getvita.ai",
+      "status": "activa",
+      "tag": "Healthtech",
+      "events": [
+        {
+          "type": "fundacion",
+          "date": "2025-09",
+          "title": "Primera versión de la app Vita",
+          "prose": "Vita ya ofrecía una app para usuarios de centros deportivos: su primera versión figura publicada el 20 de septiembre de 2025.",
+          "source": "App Store",
+          "basis": "La fecha corresponde a la primera versión pública de la app, no a la fundación de la empresa.",
+          "source_url": "https://apps.apple.com/cl/app/vita-ia/id6751625028"
+        }
+      ],
+      "aliases": [],
+      "search_blob": "vita getvita.ai vita.lat"
     }
   ]
 }
